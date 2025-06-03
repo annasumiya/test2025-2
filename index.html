@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>言語選択</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="lang-select-bg">
+  <div class="lang-select-container" id="lang-select">
+    <button class="lang-btn-large" data-lang="ja">日本語</button>
+    <button class="lang-btn-large" data-lang="en">English</button>
+    <button class="lang-btn-large" data-lang="zh">中文</button>
+    <button class="lang-btn-large" data-lang="ko">한국어</button>
+  </div>
+  <div class="temp-select-container" id="temp-select" style="display:none;">
+    <h1 class="temp-title" id="title-temp">どちらかを選択してください</h1>
+    <button class="temp-btn" id="btn-cold">
+      <span class="temp-btn-main">冷たい</span>
+    </button>
+    <button class="temp-btn" id="btn-hot">
+      <span class="temp-btn-main">温かい</span>
+    </button>
+    <button class="back-btn-temp" id="back-to-lang">
+      <span class="back-btn-label">もどる</span><br>
+      <span class="back-btn-arrow">&#8592;</span>
+    </button>
+  </div>
+  <div class="size-select-container" id="size-select" style="display:none;">
+    <h1 class="size-title" id="title-size">大きさを選択してください</h1>
+    <button class="size-btn" id="btn-large">
+      <span class="size-btn-main">大きめ (L)</span>
+    </button>
+    <button class="size-btn" id="btn-normal">
+      <span class="size-btn-main">普通 (R)</span>
+    </button>
+    <button class="back-btn-size" id="back-to-temp">
+      <span class="back-btn-label">もどる</span><br>
+      <span class="back-btn-arrow">&#8592;</span>
+    </button>
+  </div>
+  <div class="type-select-container" id="type-select" style="display:none;">
+    <h1 class="type-title" id="title-type">どちらかを選択してください</h1>
+    <button class="type-btn" id="btn-coffee">
+      <span class="type-btn-main">コーヒー</span>
+    </button>
+    <button class="type-btn" id="btn-latte">
+      <span class="type-btn-main">カフェラテ</span>
+    </button>
+    <button class="back-btn-type" id="back-to-size">
+      <span class="back-btn-label">もどる</span><br>
+      <span class="back-btn-arrow">&#8592;</span>
+    </button>
+  </div>
+  <div class="strength-select-container" id="strength-select" style="display:none;">
+    <h1 class="strength-title" id="title-strength">濃さを選択してください</h1>
+    <button class="strength-btn">
+      <span class="strength-btn-main">濃いめ</span>
+    </button>
+    <button class="strength-btn">
+      <span class="strength-btn-main">ふつう</span>
+    </button>
+    <button class="strength-btn">
+      <span class="strength-btn-main">薄め</span>
+    </button>
+    <button class="back-btn-strength" id="back-to-type">
+      <span class="back-btn-label">もどる</span><br>
+      <span class="back-btn-arrow">&#8592;</span>
+    </button>
+  </div>
+  <div class="confirm-container" id="confirm-select" style="display:none;">
+    <h1 class="confirm-title">確認</h1>
+    <div class="confirm-list" id="confirm-list"></div>
+    <div class="confirm-bottom-btns">
+      <button class="confirm-edit-btn">
+        <span class="confirm-btn-main">修正</span>
+      </button>
+      <button class="confirm-make-btn">
+        <span class="confirm-btn-main">作る</span>
+      </button>
+    </div>
+  </div>
+  <div class="edit-container" id="edit-select" style="display:none;">
+    <h1 class="edit-title">修正する項目を押してください</h1>
+    <div class="edit-list" id="edit-list"></div>
+  </div>
+  <div class="making-container" id="making-select" style="display:none;">
+    <div class="making-message" id="making-message">
+      ただいまお作りしています。<br>少々お待ちください。
+    </div>
+    <div class="making-dots">
+      <div class="dot dot1"></div>
+      <div class="dot dot2"></div>
+      <div class="dot dot3"></div>
+    </div>
+    <div class="making-cup">
+      <svg id="coffee-cup-svg" width="320" height="400" viewBox="0 0 320 400">
+        <polyline points="40,20 80,380 240,380 280,20" fill="none" stroke="#fff" stroke-width="7"/>
+        <path id="coffee-surface" d="M70,320 Q120,390 160,340 Q200,290 250,360" fill="none" stroke="#fff" stroke-width="6"/>
+      </svg>
+    </div>
+  </div>
+  <script>
+    // 多言語辞書
+    const i18n = {
+      ja: {
+        tempTitle: 'どちらかを選択してください',
+        cold: '冷たい',
+        hot: '温かい',
+        sizeTitle: '大きさを選択してください',
+        large: '大きめ (L)',
+        normal: '普通 (R)',
+        typeTitle: 'どちらかを選択してください',
+        coffee: 'コーヒー',
+        latte: 'カフェラテ',
+        strengthTitle: '濃さを選択してください',
+        strong: '濃いめ',
+        medium: 'ふつう',
+        light: '薄め',
+        confirm: '確認',
+        edit: '修正',
+        make: '作る',
+        editTitle: '修正する項目を押してください',
+        making: 'ただいまお作りしています。<br>少々お待ちください。',
+        done: '出来上がりました。<br>どうぞお取りください。',
+        back: 'もどる',
+      },
+      en: {
+        tempTitle: 'Please select one',
+        cold: 'Cold',
+        hot: 'Hot',
+        sizeTitle: 'Select size',
+        large: 'Large (L)',
+        normal: 'Regular (R)',
+        typeTitle: 'Please select one',
+        coffee: 'Coffee',
+        latte: 'Café Latte',
+        strengthTitle: 'Select strength',
+        strong: 'Strong',
+        medium: 'Normal',
+        light: 'Light',
+        confirm: 'Confirm',
+        edit: 'Edit',
+        make: 'Make',
+        editTitle: 'Select item to edit',
+        making: 'Now making your coffee.<br>Please wait a moment.',
+        done: 'Ready!<br>Please take your coffee.',
+        back: 'Back',
+      },
+      zh: {
+        tempTitle: '请选择',
+        cold: '冷',
+        hot: '热',
+        sizeTitle: '请选择杯量',
+        large: '大杯 (L)',
+        normal: '中杯 (R)',
+        typeTitle: '请选择',
+        coffee: '咖啡',
+        latte: '拿铁',
+        strengthTitle: '请选择浓度',
+        strong: '浓',
+        medium: '普通',
+        light: '淡',
+        confirm: '确认',
+        edit: '修改',
+        make: '制作',
+        editTitle: '请选择要修改的项目',
+        making: '正在制作，请稍候。',
+        done: '已完成。请取走您的咖啡。',
+        back: '返回',
+      },
+      ko: {
+        tempTitle: '선택해 주세요',
+        cold: '차가움',
+        hot: '따뜻함',
+        sizeTitle: '사이즈를 선택해 주세요',
+        large: '큰 컵 (L)',
+        normal: '보통 (R)',
+        typeTitle: '선택해 주세요',
+        coffee: '커피',
+        latte: '카페라떼',
+        strengthTitle: '진하기를 선택해 주세요',
+        strong: '진하게',
+        medium: '보통',
+        light: '연하게',
+        confirm: '확인',
+        edit: '수정',
+        make: '만들기',
+        editTitle: '수정할 항목을 선택해 주세요',
+        making: '제작 중입니다.<br>잠시만 기다려 주세요.',
+        done: '완성되었습니다.<br>가져가 주세요.',
+        back: '뒤로',
+      }
+    };
+    let currentLang = 'ja';
+    // 言語選択
+    document.querySelectorAll('.lang-btn-large').forEach(btn => {
+      btn.addEventListener('click', function() {
+        currentLang = this.dataset.lang;
+        document.getElementById('lang-select').style.display = 'none';
+        setLangTexts();
+        document.getElementById('temp-select').style.display = 'flex';
+      });
+    });
+    function setLangTexts() {
+      const t = i18n[currentLang];
+      // 温度
+      document.getElementById('title-temp').textContent = t.tempTitle;
+      document.querySelectorAll('#temp-select .temp-btn')[0].textContent = t.cold;
+      document.querySelectorAll('#temp-select .temp-btn')[1].textContent = t.hot;
+      document.querySelector('#back-to-lang .back-btn-label').textContent = t.back;
+      // サイズ
+      document.getElementById('title-size').textContent = t.sizeTitle;
+      document.querySelectorAll('#size-select .size-btn-main')[0].textContent = t.large;
+      document.querySelectorAll('#size-select .size-btn-main')[1].textContent = t.normal;
+      document.querySelector('#back-to-temp .back-btn-label').textContent = t.back;
+      // 種類
+      document.getElementById('title-type').textContent = t.typeTitle;
+      document.querySelectorAll('#type-select .type-btn-main')[0].textContent = t.coffee;
+      document.querySelectorAll('#type-select .type-btn-main')[1].textContent = t.latte;
+      document.querySelector('#back-to-size .back-btn-label').textContent = t.back;
+      // 濃さ
+      document.getElementById('title-strength').textContent = t.strengthTitle;
+      document.querySelectorAll('#strength-select .strength-btn-main')[0].textContent = t.strong;
+      document.querySelectorAll('#strength-select .strength-btn-main')[1].textContent = t.medium;
+      document.querySelectorAll('#strength-select .strength-btn-main')[2].textContent = t.light;
+      document.querySelector('#back-to-type .back-btn-label').textContent = t.back;
+      // 確認
+      document.querySelector('.confirm-title').textContent = t.confirm;
+      document.querySelector('.confirm-edit-btn .confirm-btn-main').textContent = t.edit;
+      document.querySelector('.confirm-make-btn .confirm-btn-main').textContent = t.make;
+      // 修正
+      document.querySelector('.edit-title').textContent = t.editTitle;
+      // 作成中
+      document.getElementById('making-message').innerHTML = t.making;
+      // 作成中画面の完成メッセージも言語切り替え対応
+      window.makingDoneMessage = t.done;
+    }
+    // 言語選択→温度選択画面遷移
+    document.querySelectorAll('.lang-btn-large').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if(this.dataset.lang === 'ja') {
+          document.getElementById('lang-select').style.display = 'none';
+          document.getElementById('temp-select').style.display = 'flex';
+        }
+      });
+    });
+    // 選択内容を管理
+    const order = { temp: null, size: null, type: null, strength: null };
+    // 各選択時にorderへ保存
+    document.getElementById('btn-cold').onclick = function() {
+      order.temp = '冷たい';
+      document.getElementById('temp-select').style.display = 'none';
+      document.getElementById('size-select').style.display = 'flex';
+      // 修正作業中なら確認画面に戻す
+      if (window.isEditing) {
+        showConfirmScreen();
+        window.isEditing = false;
+      }
+    };
+    document.getElementById('btn-hot').onclick = function() {
+      order.temp = '温かい';
+      document.getElementById('temp-select').style.display = 'none';
+      document.getElementById('size-select').style.display = 'flex';
+      if (window.isEditing) {
+        showConfirmScreen();
+        window.isEditing = false;
+      }
+    };
+    document.getElementById('btn-large').onclick = function() {
+      order.size = '大きめ';
+      document.getElementById('size-select').style.display = 'none';
+      document.getElementById('type-select').style.display = 'flex';
+      if (window.isEditing) {
+        showConfirmScreen();
+        window.isEditing = false;
+      }
+    };
+    document.getElementById('btn-normal').onclick = function() {
+      order.size = '普通';
+      document.getElementById('size-select').style.display = 'none';
+      document.getElementById('type-select').style.display = 'flex';
+      if (window.isEditing) {
+        showConfirmScreen();
+        window.isEditing = false;
+      }
+    };
+    document.getElementById('btn-coffee').onclick = function() {
+      order.type = 'コーヒー';
+      document.getElementById('type-select').style.display = 'none';
+      document.getElementById('strength-select').style.display = 'flex';
+      if (window.isEditing) {
+        showConfirmScreen();
+        window.isEditing = false;
+      }
+    };
+    document.getElementById('btn-latte').onclick = function() {
+      order.type = 'カフェラテ';
+      order.strength = null;
+      document.getElementById('type-select').style.display = 'none';
+      showConfirmScreen();
+      window.isEditing = false;
+    };
+    document.querySelectorAll('.strength-btn').forEach(btn => {
+      btn.onclick = function() {
+        order.strength = btn.textContent.trim();
+        showConfirmScreen();
+        window.isEditing = false;
+      };
+    });
+    // もどる（温度→言語）
+    document.getElementById('back-to-lang').addEventListener('click', function() {
+      document.getElementById('temp-select').style.display = 'none';
+      document.getElementById('lang-select').style.display = 'flex';
+    });
+    // もどる（大きさ→温度）
+    document.getElementById('back-to-temp').addEventListener('click', function() {
+      document.getElementById('size-select').style.display = 'none';
+      document.getElementById('temp-select').style.display = 'flex';
+    });
+    // 大きさ選択→種類選択
+    document.getElementById('btn-large').addEventListener('click', function() {
+      document.getElementById('size-select').style.display = 'none';
+      document.getElementById('type-select').style.display = 'flex';
+    });
+    document.getElementById('btn-normal').addEventListener('click', function() {
+      document.getElementById('size-select').style.display = 'none';
+      document.getElementById('type-select').style.display = 'flex';
+    });
+    // もどる（種類→大きさ）
+    document.getElementById('back-to-size').addEventListener('click', function() {
+      document.getElementById('type-select').style.display = 'none';
+      document.getElementById('size-select').style.display = 'flex';
+    });
+    // 種類選択→濃さ選択（コーヒー）
+    document.getElementById('btn-coffee').addEventListener('click', function() {
+      document.getElementById('type-select').style.display = 'none';
+      document.getElementById('strength-select').style.display = 'flex';
+    });
+    // もどる（濃さ→種類）
+    document.getElementById('back-to-type').addEventListener('click', function() {
+      document.getElementById('strength-select').style.display = 'none';
+      document.getElementById('type-select').style.display = 'flex';
+    });
+    // 修正ボタンで修正画面へ
+    document.querySelector('.confirm-edit-btn').onclick = function() {
+      document.getElementById('confirm-select').style.display = 'none';
+      showEditScreen();
+      window.isEditing = true;
+    };
+    // 作るボタンで作成中画面へ
+    document.querySelector('.confirm-make-btn').onclick = function() {
+      document.getElementById('confirm-select').style.display = 'none';
+      document.getElementById('making-select').style.display = 'flex';
+      startCoffeeAnimation();
+    };
+    function showEditScreen() {
+      // 選択内容に応じて修正項目を生成
+      const items = [];
+      if(order.type) items.push(order.type);
+      if(order.size) items.push(order.size);
+      if(order.temp) items.push(order.temp);
+      if(order.type === 'コーヒー' && order.strength) items.push(order.strength);
+      document.getElementById('edit-list').innerHTML =
+        items.map(item => `<button class='edit-list-item'>${item}</button>`).join('');
+      document.getElementById('edit-select').style.display = 'flex';
+      // イベントリスナーを追加
+      document.querySelectorAll('.edit-list-item').forEach(btn => {
+        btn.onclick = function() {
+          const val = btn.textContent.trim();
+          document.getElementById('edit-select').style.display = 'none';
+          window.isEditing = true;
+          if(val === 'コーヒー' || val === 'カフェラテ') {
+            document.getElementById('type-select').style.display = 'flex';
+          } else if(val === '大きめ' || val === '普通') {
+            document.getElementById('size-select').style.display = 'flex';
+          } else if(val === '冷たい' || val === '温かい') {
+            document.getElementById('temp-select').style.display = 'flex';
+          } else if(val === '濃いめ' || val === 'ふつう' || val === '薄め') {
+            document.getElementById('strength-select').style.display = 'flex';
+          }
+        };
+      });
+    }
+    function showConfirmScreen() {
+      const t = i18n[currentLang];
+      const list = [];
+      // 選択内容を言語ごとに変換
+      if(order.type) list.push(t[order.type === 'コーヒー' ? 'coffee' : order.type === 'カフェラテ' ? 'latte' : order.type]);
+      if(order.size) list.push(t[order.size === '大きめ' ? 'large' : order.size === '普通' ? 'normal' : order.size]);
+      if(order.temp) list.push(t[order.temp === '冷たい' ? 'cold' : order.temp === '温かい' ? 'hot' : order.temp]);
+      if(order.type === 'コーヒー' && order.strength) list.push(t[order.strength === '濃いめ' ? 'strong' : order.strength === 'ふつう' ? 'medium' : order.strength === '薄め' ? 'light' : order.strength]);
+      document.getElementById('confirm-list').innerHTML =
+        list.map(item => `<div class="confirm-list-item">${item}</div>`).join('');
+      document.getElementById('strength-select').style.display = 'none';
+      document.getElementById('confirm-select').style.display = 'flex';
+    }
+    // コーヒーがカップに溜まるアニメーション
+    function startCoffeeAnimation() {
+      const surface = document.getElementById('coffee-surface');
+      const message = document.getElementById('making-message');
+      // 3段階の波線高さ（0:下, 1:中, 2:上）
+      const waveLevels = [0, 0.5, 1];
+      let currentStep = 0;
+      let dotStep = 0;
+      let dotTimer = null;
+      let finished = false;
+      const duration = 10000; // 10秒
+      // カップの内側のパス（底から上までのY座標）
+      function wavePath(level) {
+        let y, left, right;
+        if (level === 0) { // 下
+          y = 320; left = 80; right = 240;
+        } else if (level === 0.5) { // 中
+          y = 200; left = 80; right = 240; // 20px長く
+        } else if (level === 1) { // 上
+          y = 80; left = 100 - 15; right = 220 + 15; // 30px長く
+        } else {
+          y = 320 - 240 * level;
+          left = 80 + (100 - 80) * level;
+          right = 240 + (220 - 240) * level;
+        }
+        if (level === 0.5) {
+          left -= 10;
+          right += 10;
+        }
+        if (level === 1) {
+          left -= 15;
+          right += 15;
+        }
+        const amp = 22;
+        const waveCount = 3;
+        const totalWidth = right - left;
+        let d = `M${left},${y}`;
+        for(let i=0; i<waveCount; i++) {
+          const x1 = left + (totalWidth/waveCount) * (i + 0.5);
+          const y1 = y + (i%2===0 ? amp : -amp);
+          const x2 = left + (totalWidth/waveCount) * (i + 1);
+          d += ` Q${x1},${y1} ${x2},${y}`;
+        }
+        return d;
+      }
+      // ドットアニメーション＋波線高さ切替
+      const dots = [
+        document.querySelector('.dot1'),
+        document.querySelector('.dot2'),
+        document.querySelector('.dot3')
+      ];
+      function animateDots() {
+        if (finished) return;
+        dots.forEach((dot, i) => {
+          dot.style.opacity = (i === dotStep) ? '1' : '0.25';
+        });
+        // 波線の高さも切り替え
+        surface.setAttribute('d', wavePath(waveLevels[dotStep]));
+        dotStep = (dotStep + 1) % 3;
+        dotTimer = setTimeout(animateDots, 600);
+      }
+      animateDots();
+      function stopDots() {
+        clearTimeout(dotTimer);
+        dots.forEach(dot => dot.style.opacity = '1');
+      }
+      // 10秒後に波線を一番上にしてメッセージ変更
+      setTimeout(() => {
+        finished = true;
+        surface.setAttribute('d', wavePath(1));
+        // 言語ごとの完成メッセージ
+        message.innerHTML = window.makingDoneMessage || i18n[currentLang].done;
+        stopDots();
+        // 3秒後に言語選択画面に戻る
+        setTimeout(() => {
+          document.getElementById('making-select').style.display = 'none';
+          document.getElementById('lang-select').style.display = 'flex';
+        }, 3000);
+      }, duration);
+      // 初期化
+      surface.setAttribute('d', wavePath(0));
+      surface.setAttribute('fill', 'none');
+      surface.setAttribute('stroke', '#fff');
+      surface.setAttribute('stroke-width', '7');
+      // 言語ごとの作成中メッセージ
+      message.innerHTML = i18n[currentLang].making;
+    }
+  </script>
+</body>
+</html>
